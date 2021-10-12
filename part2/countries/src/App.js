@@ -18,10 +18,12 @@ const CountryLanguages = ({languages}) => {
   )
 }
 
-const CountryList = ({countries}) => {
+const CountryList = ({countries, countryClickHandle}) => {
   return (
     countries.map(country => (
-      <div key={country.ccn3}>{country.name.common}</div>
+      <div key={country.ccn3}>
+        {country.name.common} <button onClick={() => countryClickHandle(country.name.common)}>show</button>
+      </div>
     ))
   )
 }
@@ -44,7 +46,7 @@ const CountryDetails = ({country}) => {
   )
 }
 
-const CountriesOutput = ({countries, search}) => {
+const CountriesOutput = ({countries, search, countryClickHandle}) => {
   const searchLowerCase = search.toLowerCase()
   const countrySearch = countries.filter(country => country.name.common.toLowerCase().includes(searchLowerCase))
   const countryPerfectMatch = countrySearch.filter(country => country.name.common.toLowerCase() === searchLowerCase)
@@ -63,7 +65,7 @@ const CountriesOutput = ({countries, search}) => {
       Too many matches, specify another filter
     </div>)
   } else if (countrySearch.length > 1) {
-    return <CountryList countries={countrySearch} />
+    return <CountryList countries={countrySearch} countryClickHandle={countryClickHandle} />
   } else {
     return <div>No matches</div>
   }
@@ -87,12 +89,16 @@ const App = () => {
     setCountrySearch(event.target.value)
   }
 
+  const handleCountryClick = (countryName) => {
+    setCountrySearch(countryName)
+  }
+
   return (
     <div>
       find countries
       <input value={countrySearch} onChange={handleCountrySearchChange}></input>
       <br></br>
-      <CountriesOutput countries={countries} search={countrySearch} />
+      <CountriesOutput countries={countries} search={countrySearch} countryClickHandle={handleCountryClick} />
     </div>
   );
 }
